@@ -5,6 +5,8 @@ import { useState } from "react";
 const Admin = () => {
     const [product, setProduct] = useState({});
     const [coupon, setCode] = useState({});
+    const [errorVisible, setErrorVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleTextChange = (e) => {
         let copy = {...product};
@@ -20,22 +22,25 @@ const Admin = () => {
       setCode(copy);
   }
 
-
+  const showError = (text) => {
+    setErrorMessage(text);
+    setErrorVisible(true);
+  }
     const handleSaveProduct = () => {
         
 
         //title length
         if (product.title.length < 5){
-          alert("Error: Title length is too short");
+          showError("Error: Title should have 5 characters")
           return;
         }
 
         if(!product.image){
-          alert("Error: Image cna not be empty");
+          showError("Error: Image cna not be empty");
           return;
         }
         if(!product.category){
-          alert("Error: Category can not be empty");
+          showError("Error: Category can not be empty");
           return;
         }
 
@@ -43,10 +48,11 @@ const Admin = () => {
         savedProduct.price = parseFloat(product.price);
 
         if (!savedProduct.price || savedProduct.price <1) {
-          alert("Error: Price should be greater then 1");
+          showError("Error: Price should be greater then 1");
           return;
         }
 
+        setErrorVisible(false);
         console.log(product);
       }
 
@@ -59,13 +65,14 @@ const Admin = () => {
       savedCoupon.dicount = parseFloat(savedCoupon.discount);
       // Discount can not be greater than 35
       if(!savedCoupon.discount || savedCoupon.discount > 35){
-          alert("Error: Discount can not be greater than 35%");
+          showError("Error: Discount can not be greater than 35%");
           return;
       }
       //code length can not be less than 5 
-      if(savedCoupon.coupon.length > 5){
-        alert("Error: Code is too short");
+      if(savedCoupon.coupon.length < 5){
+        showError("Error: Code is too short");
       }
+      setErrorVisible(false);
       //send coupon to server
       console.log("Saving Coupon")
 
@@ -73,6 +80,8 @@ const Admin = () => {
 
    return (
         <div className="admin-page">
+          {errorVisible ? <div className="alert alert-danger">{errorMessage}</div> : null}
+
             <div className="sections-container">
                 <sections className="sec-products">
                     <h4>Manage Products</h4>

@@ -7,3 +7,7 @@
 .admin-page .sex-coupons {
     flex: 3;
 }
+
+.admin-page .alert {
+  margin: 15px 250px;
+}
