@@ -15,7 +15,7 @@ const Catalog = () => {
     }
 
     useEffect(() => {
-        // do something when the components is displayed
+        
         loadCatalog();
     }, []);
 
