@@ -1,0 +1,9 @@
+.admin-page .section-container {
+    display: flex;
+}
+.admin-page .section-products {
+    flex: 5;
+}
+.admin-page .sex-coupons {
+    flex: 3;
+}

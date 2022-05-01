@@ -1,0 +1,9 @@
+
+.navbar div{
+    border: 1px solid red;
+}
+.navbar h1{
+    text-align: right;
+    color:rgb(64, 122, 222);
+}
+
