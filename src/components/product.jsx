@@ -13,7 +13,8 @@ const Product = (props) => {
     };
 
     const handleAdd = () => {
-      addProdToCart(props);
+      let prod = {...props.info, quantity: quantity};
+      addProdToCart(prod);
     }
 
     return (
