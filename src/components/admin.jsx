@@ -1,12 +1,14 @@
 import React from "react";
 import "./admin.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import DataService from './../services/dataService';
 
 const Admin = () => {
     const [product, setProduct] = useState({});
     const [coupon, setCode] = useState({});
     const [errorVisible, setErrorVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [allCoupons, setAllCoupons] = useState([]);
 
     const handleTextChange = (e) => {
         let copy = {...product};
@@ -14,6 +16,29 @@ const Admin = () => {
 
         setProduct(copy);
     }
+
+    useEffect(() => {
+      retrieveCoupons();
+    });
+
+    const retrieveCoupons = async () => {
+      let service = new DataService();
+      let coupons = await service.getCoupons();
+
+      setAllCoupons(coupons);
+    };
+
+    //const loadCoupons = async () => {
+    //  const service = new DataService();
+    //  let coupons = await service.getCoupons();
+    //  console.log(coupons);
+    //  setCoupon(coupons);
+//  }
+
+ // useEffect(() => {
+      
+      //loadCatalog();
+  //}, []);
 
     const handleCouponChange = (e) => {
       let copy = {...coupon};
@@ -122,6 +147,11 @@ const Admin = () => {
                         <div className="my-control">
                         <button onClick={handleSaveCoupon}>Register Coupon</button>
                         </div>
+                    </div>
+                    <div className="coupon-list">
+                      <ul>
+                        {allCoupons.map(coupon => <li key={coupon._id}>{coupon.code} - {coupon.discount}</li>)}
+                      </ul>
                     </div>
                 </sections>
                 

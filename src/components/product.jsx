@@ -23,7 +23,7 @@ const Product = (props) => {
         
         <h5>{props.info.title}</h5>
 
-        <label className="Price:">$ {(props.info.price).toFixed(2)}</label>
+        <label className="Price:">$ {(props.info.price * 1).toFixed(2)}</label>
         <label className="Total:">$ {(props.info.price * quantity).toFixed(2)}</label>
 
         <QuantityPicker onChange={handleQuantityChange}></QuantityPicker>

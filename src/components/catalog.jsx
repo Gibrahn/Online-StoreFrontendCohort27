@@ -7,10 +7,9 @@ import { Button } from "bootstrap";
 const Catalog = () => {
     const [products, setProducts] = useState([]);
 
-    const loadCatalog = () => {
+    const loadCatalog = async () => {
         const service = new DataService();
-        let prods = service.getCatalog();
-        console.log(prods);
+        let prods = await service.getCatalog();
         setProducts(prods);
     }
 
