@@ -9,6 +9,7 @@ const Admin = () => {
     const [errorVisible, setErrorVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [allCoupons, setAllCoupons] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
 
     const handleTextChange = (e) => {
         let copy = {...product};
@@ -19,7 +20,14 @@ const Admin = () => {
 
     useEffect(() => {
       retrieveCoupons();
-    });
+      retrieveProducts();
+    }, []);
+
+    const retrieveProducts = async () => {
+      let service = new DataService();
+      let prods = await service.getCatalog();
+      setAllProducts(prods)
+    }
 
     const retrieveCoupons = async () => {
       let service = new DataService();
@@ -27,18 +35,6 @@ const Admin = () => {
 
       setAllCoupons(coupons);
     };
-
-    //const loadCoupons = async () => {
-    //  const service = new DataService();
-    //  let coupons = await service.getCoupons();
-    //  console.log(coupons);
-    //  setCoupon(coupons);
-//  }
-
- // useEffect(() => {
-      
-      //loadCatalog();
-  //}, []);
 
     const handleCouponChange = (e) => {
       let copy = {...coupon};
@@ -51,7 +47,7 @@ const Admin = () => {
     setErrorMessage(text);
     setErrorVisible(true);
   }
-    const handleSaveProduct = () => {
+    const handleSaveProduct = async () => {
         
 
         //title length
@@ -78,29 +74,41 @@ const Admin = () => {
         }
 
         setErrorVisible(false);
-        console.log(product);
+        let service = new DataService();
+        let res = await service.saveProduct(savedProduct);
+        console.log("Saved", res);
+
+        let copy = [...allProducts];
+        copy.push(savedProduct);
+        setAllProducts(copy);
       }
 
 
-    const handleSaveCoupon = () => {
+    const handleSaveCoupon = async () => {
       console.log(coupon);
 
       let savedCoupon = {...coupon };
 
-      savedCoupon.dicount = parseFloat(savedCoupon.discount);
+      savedCoupon.discount = parseFloat(savedCoupon.discount);
       // Discount can not be greater than 35
       if(!savedCoupon.discount || savedCoupon.discount > 35){
           showError("Error: Discount can not be greater than 35%");
           return;
       }
       //code length can not be less than 5 
-      if(savedCoupon.coupon.length < 5){
+      if(savedCoupon.code.length < 5){
         showError("Error: Code is too short");
+        return;
       }
       setErrorVisible(false);
       //send coupon to server
-      console.log("Saving Coupon")
+      let service = new DataService();
+      let res = await service.saveCoupon(savedCoupon);
+      console.log(res);
 
+      let copy = [...allCoupons];
+      copy.push(savedCoupon);
+      setAllCoupons(copy);
   }
 
    return (
@@ -130,6 +138,11 @@ const Admin = () => {
                         <div className="my-control">
                         <button onClick={handleSaveProduct}>Register Product</button>
                         </div>
+                        <div className="product-list">
+                      <ul>
+                        {allProducts.map(product => <li key={product._id}>{product.title} - {product.image} -{product.category} - {product.price} </li>)}
+                      </ul>
+                    </div>
                     </div>
 
                 </sections>
@@ -138,11 +151,11 @@ const Admin = () => {
                     <div className="form">
                         <div className="my-control">
                             <label>Coupon:</label>
-                            <input onChange={handleCouponChange} name="coupon" type="text" />
+                            <input onChange={handleCouponChange} name="code" type="text" />
                         </div>
                         <div className="my-control">
                             <label>Discount:</label>
-                            <input onChange={handleCouponChange} name="disocunt" type="text" />
+                            <input onChange={handleCouponChange} name="discount" type="text" />
                         </div>
                         <div className="my-control">
                         <button onClick={handleSaveCoupon}>Register Coupon</button>
@@ -153,7 +166,7 @@ const Admin = () => {
                         {allCoupons.map(coupon => <li key={coupon._id}>{coupon.code} - {coupon.discount}</li>)}
                       </ul>
                     </div>
-                </sections>
+                </sections>c
                 
             </div>
             
